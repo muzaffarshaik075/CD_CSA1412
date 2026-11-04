@@ -1,0 +1,38 @@
+%{
+#include <stdio.h>
+int positive = 0, negative = 0, zero = 0;
+%}
+
+%%
+
+-[0-9]+      { negative++; }
+[+]?[0-9]+   {
+                if (yytext[0] == '+')
+                    positive++;
+                else if (yytext[0] == '0' && yytext[1] == '\0')
+                    zero++;
+                else
+                    positive++;
+             }
+[ \t]+       ;
+\n           {
+                printf("Positive numbers: %d\n", positive);
+                printf("Negative numbers: %d\n", negative);
+                printf("Zeros: %d\n", zero);
+                return 0;
+             }
+.            { printf("Invalid character: %s\n", yytext); }
+
+%%
+
+int yywrap(void)
+{
+    return 1;
+}
+
+int main(void)
+{
+    printf("Enter array elements separated by spaces: ");
+    yylex();
+    return 0;
+}

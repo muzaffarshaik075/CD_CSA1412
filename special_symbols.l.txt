@@ -1,0 +1,14 @@
+%{
+#include<stdio.h>
+int c=0;
+%}
+%%
+[#$@(){};,.\[\]_!"] {c++;}
+\n ;
+. ;
+%%
+int yywrap(){return 1;}
+int main(){
+    yylex();
+    printf("Special characters = %d\n",c);
+}

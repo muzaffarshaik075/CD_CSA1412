@@ -1,0 +1,70 @@
+%{
+#include <stdio.h>
+
+int keyword = 0, identifier = 0, number = 0;
+int operator = 0, special = 0, total = 0;
+%}
+
+%%
+
+"int"|"float"|"char"|"double"|"void"|"if"|"else"|"while"|"for"|"do"|"return"|"break"|"continue"|"switch"|"case"|"default"|"long"|"short"|"unsigned"|"signed"|"const"|"static"|"struct"|"printf"|"scanf" {
+    printf("%-20s %-20s\n", "KEYWORD", yytext);
+    keyword++;
+    total++;
+}
+
+[a-zA-Z_][a-zA-Z0-9_]* {
+    printf("%-20s %-20s\n", "IDENTIFIER", yytext);
+    identifier++;
+    total++;
+}
+
+[0-9]+(\.[0-9]+)? {
+    printf("%-20s %-20s\n", "NUMBER", yytext);
+    number++;
+    total++;
+}
+
+"=="|"!="|"<="|">="|"++"|"--"|"&&"|"||"|"+"|"-"|"*"|"/"|"%"|"="|"<"|">"|"!"|"&"|"|" {
+    printf("%-20s %-20s\n", "OPERATOR", yytext);
+    operator++;
+    total++;
+}
+
+[(){}\[\],;.] {
+    printf("%-20s %-20s\n", "SPECIAL SYMBOL", yytext);
+    special++;
+    total++;
+}
+
+[ \t\r\n]+    ;
+. {
+    printf("%-20s %-20s\n", "UNKNOWN TOKEN", yytext);
+}
+
+%%
+
+int yywrap(void)
+{
+    return 1;
+}
+
+int main(void)
+{
+    printf("Enter C code (Ctrl+Z, then Enter to finish):\n\n");
+    printf("%-20s %-20s\n", "TOKEN NAME", "LEXEME");
+    printf("----------------------------------------\n");
+
+    yylex();
+
+    printf("\n========== TOKEN SUMMARY ==========\n");
+    printf("Keywords          : %d\n", keyword);
+    printf("Identifiers       : %d\n", identifier);
+    printf("Numbers           : %d\n", number);
+    printf("Operators         : %d\n", operator);
+    printf("Special Symbols   : %d\n", special);
+    printf("----------------------------------\n");
+    printf("Total Tokens      : %d\n", total);
+
+    return 0;
+}
